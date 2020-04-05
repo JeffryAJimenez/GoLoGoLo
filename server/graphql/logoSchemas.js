@@ -25,7 +25,7 @@ var logoType = new GraphQLObjectType({
       backgroundColor: {
         type: GraphQLString,
       },
-      boderColor: {
+      borderColor: {
         type: GraphQLString,
       },
       borderRadius: {
@@ -103,7 +103,7 @@ var mutation = new GraphQLObjectType({
           backgroundColor: {
             type: new GraphQLNonNull(GraphQLString),
           },
-          boderColor: {
+          borderColor: {
             type: new GraphQLNonNull(GraphQLString),
           },
           borderRadius: {
@@ -148,7 +148,7 @@ var mutation = new GraphQLObjectType({
           backgroundColor: {
             type: new GraphQLNonNull(GraphQLString),
           },
-          boderColor: {
+          borderColor: {
             type: new GraphQLNonNull(GraphQLString),
           },
           borderRadius: {
@@ -170,6 +170,12 @@ var mutation = new GraphQLObjectType({
             {
               text: params.text,
               color: params.color,
+              backgroundColor: params.backgroundColor,
+              borderColor: params.borderColor,
+              borderRadius: params.borderRadius,
+              borderWidth: params.borderWidth,
+              padding: params.padding,
+              margins: params.margins,
               fontSize: params.fontSize,
               lastUpdate: new Date(),
             },

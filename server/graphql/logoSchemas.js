@@ -57,7 +57,7 @@ var queryType = new GraphQLObjectType({
       logos: {
         type: new GraphQLList(logoType),
         resolve: function () {
-          const logos = LogoModel.find().exec();
+          const logos = LogoModel.find().sort({ lastUpdate: -1 }).exec();
           if (!logos) {
             throw new Error("Error");
           }

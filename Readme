@@ -131,4 +131,5 @@ mutation {
     lastUpdate
   }
 }
-& "C:\Program Files\MongoDB\Server\4.2\bin\mongod.exe" --dbpath="db"
+& "C:\Program Files\MongoDB\Server\4.2\bin\mongod.exe" --dbpath="db",
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass

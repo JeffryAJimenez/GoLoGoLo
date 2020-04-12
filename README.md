@@ -66,3 +66,137 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `yarn build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+mutation {
+addLogo(text: "Dev", color: "#000000", fontSize: 12, backgroundColor: "#000000", boderColor: "#000000", borderRadius: 10, borderWidth: 20, padding: 2, margins: 1) {
+\_id
+text
+color
+backgroundColor
+borderColor
+borderRadius
+borderWidth
+padding
+margins
+fontSize
+lastUpdate
+}
+
+mutation {
+removeLogo(id: "5e8a570f0bd6f70d747b8872") {
+\_id
+text
+color
+backgroundColor
+borderColor
+borderRadius
+borderWidth
+padding
+margins
+fontSize
+lastUpdate
+}
+}
+}
+
+---
+
+mutation {
+addLogo(text: "Omega", color: "#BF0F0F", fontSize: 12, backgroundColor: "##FFFFFF", borderColor: "#000000", borderRadius: 2, borderWidth: 5, padding: 2, margins: 1) {
+\_id
+text
+color
+backgroundColor
+borderColor
+borderRadius
+borderWidth
+padding
+margins
+fontSize
+lastUpdate
+}
+}
+
+mutation {
+updateLogo(id: "5e8a58bc15a5efaa78300635", text: "Alpha", color: "#BF0F0F", fontSize: 200, backgroundColor: "#000000", borderColor: "#ffffff", borderRadius: 8, borderWidth: 6, padding: 20, margins: 3) {
+\_id
+text
+color
+backgroundColor
+borderColor
+borderRadius
+borderWidth
+padding
+margins
+fontSize
+lastUpdate
+}
+}
+
+---
+
+mutation {
+addLogo(text: "BLACK", color: "#FFFFFF", fontSize: 20, backgroundColor: "#000000", borderColor: "#001BE7", borderRadius: 2, borderWidth: 10, padding: 2, margins: 1) {
+\_id
+text
+color
+backgroundColor
+borderColor
+borderRadius
+borderWidth
+padding
+margins
+fontSize
+lastUpdate
+}
+}
+
+mutation {
+updateLogo(id: "5e8a596b15a5efaa78300636", text: "WHITE", color: "#000000", fontSize: 40, backgroundColor: "#ffffff", borderColor: "#E70C00", borderRadius: 144, borderWidth: 144, padding: 144, margins: 144) {
+\_id
+text
+color
+backgroundColor
+borderColor
+borderRadius
+borderWidth
+padding
+margins
+fontSize
+lastUpdate
+}
+}
+
+---
+
+{
+logos {
+\_id
+text
+color
+backgroundColor
+borderColor
+borderRadius
+borderWidth
+padding
+margins
+fontSize
+lastUpdate
+}
+}
+
+{
+logo(id: "5e8a596b15a5efaa78300636") {
+\_id
+text
+color
+backgroundColor
+borderColor
+borderRadius
+borderWidth
+padding
+margins
+fontSize
+lastUpdate
+}
+}

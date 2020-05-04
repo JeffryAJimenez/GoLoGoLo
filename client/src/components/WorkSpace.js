@@ -4,20 +4,16 @@ class WorkSpace extends Component {
   render() {
     const {
       text,
-      color,
       backgroundColor,
       borderColor,
       borderRadius,
       borderWidth,
       padding,
       margins,
-      fontSize,
     } = this.props.data.logo;
 
     const styles = {
       container: {
-        color: color,
-        fontSize: fontSize + "pt",
         backgroundColor: backgroundColor,
         borderColor: borderColor,
         borderStyle: "solid",
@@ -30,8 +26,12 @@ class WorkSpace extends Component {
 
     console.log(text);
     return (
-      <div className='col' style={styles.container}>
-        {text}
+      <div style={styles.container}>
+        {text.map((obj) => (
+          <div style={{ fontSize: obj.size + "pt", color: obj.color }}>
+            {obj.text}
+          </div>
+        ))}
       </div>
     );
   }

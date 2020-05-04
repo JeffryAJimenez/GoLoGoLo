@@ -3,20 +3,23 @@ import { Link } from "react-router-dom";
 import gql from "graphql-tag";
 import { Query, Mutation } from "react-apollo";
 import WorkSpace from "./WorkSpace";
+import Text from "./editScreenLayout/Text";
 
 const GET_LOGO = gql`
   query logo($logoId: String) {
-    logo(id: $logoId) {
+    logo(_id: $logoId) {
       _id
-      text
-      color
+      text {
+        text
+        color
+        size
+      }
       backgroundColor
       borderColor
       borderRadius
       borderWidth
       padding
       margins
-      fontSize
       lastUpdate
     }
   }
@@ -25,9 +28,7 @@ const GET_LOGO = gql`
 const UPDATE_LOGO = gql`
   mutation updateLogo(
     $id: String!
-    $text: String!
-    $color: String!
-    $fontSize: Int!
+    $text: [Text]!
     $backgroundColor: String!
     $borderColor: String!
     $borderRadius: Int!
@@ -38,8 +39,6 @@ const UPDATE_LOGO = gql`
     updateLogo(
       id: $id
       text: $text
-      color: $color
-      fontSize: $fontSize
       backgroundColor: $backgroundColor
       borderColor: $borderColor
       borderRadius: $borderRadius
@@ -49,6 +48,12 @@ const UPDATE_LOGO = gql`
     ) {
       lastUpdate
     }
+  }
+
+  type Text {
+    text: String!
+    color: String!
+    size: Int!
   }
 `;
 
@@ -65,8 +70,8 @@ class EditLogoScreen extends Component {
 
   render() {
     let text,
-      color,
-      fontSize,
+      //color,
+      //fontSize,
       backgroundColor,
       borderColor,
       borderRadius,
@@ -82,6 +87,7 @@ class EditLogoScreen extends Component {
         {({ loading, error, data }) => {
           if (loading) return "Loading...";
           if (error) return `Error! ${error.message}`;
+          console.log(data.logo.text);
 
           return (
             <Mutation
@@ -107,9 +113,9 @@ class EditLogoScreen extends Component {
                               updateLogo({
                                 variables: {
                                   id: data.logo._id,
-                                  text: text.value,
-                                  color: color.value,
-                                  fontSize: parseInt(fontSize.value),
+                                  text: data.logo.text,
+                                  //color: color.value,
+                                  //fontSize: parseInt(fontSize.value),
                                   backgroundColor: backgroundColor.value,
                                   borderColor: borderColor.value,
                                   borderRadius: parseInt(borderRadius.value),
@@ -118,9 +124,9 @@ class EditLogoScreen extends Component {
                                   margins: parseInt(margins.value),
                                 },
                               });
-                              text.value = "";
-                              color.value = "";
-                              fontSize.value = "";
+                              /*text.value = "";*/
+                              //color.value = "";
+                              //fontSize.value = "";
                               backgroundColor = "";
                               borderColor = "";
                               borderRadius = "";
@@ -129,51 +135,9 @@ class EditLogoScreen extends Component {
                               margins = "";
                             }}
                           >
-                            <div className='form-group'>
-                              <label htmlFor='text'>Text:</label>
-                              <input
-                                type='text'
-                                className='form-control'
-                                name='text'
-                                onChange={(e) => this.onChange(e, data)}
-                                ref={(node) => {
-                                  text = node;
-                                }}
-                                placeholder='Text'
-                                defaultValue={data.logo.text}
-                              />
-                            </div>
-                            <div className='form-group'>
-                              <label htmlFor='color'>Color:</label>
-                              <input
-                                type='color'
-                                className='form-control'
-                                name='color'
-                                onChange={(e) => this.onChange(e, data)}
-                                ref={(node) => {
-                                  color = node;
-                                }}
-                                placeholder='Color'
-                                defaultValue={data.logo.color}
-                              />
-                            </div>
-                            <div className='form-group'>
-                              <label htmlFor='fontSize'>Font Size:</label>
-                              <input
-                                type='number'
-                                className='form-control'
-                                name='fontSize'
-                                onChange={(e) => this.onChange(e, data)}
-                                ref={(node) => {
-                                  fontSize = node;
-                                }}
-                                placeholder='Font Size'
-                                defaultValue={data.logo.fontSize}
-                                min='2'
-                                max='144'
-                                required
-                              />
-                            </div>
+                            {data.logo.text.map((obj) => (
+                              <Text data={obj} />
+                            ))}
                             <div className='form-group'>
                               <label htmlFor='backgroundColor'>
                                 background Color:

@@ -8,7 +8,9 @@ const GET_LOGOS = gql`
   {
     logos {
       _id
-      text
+      text {
+        text
+      }
       lastUpdate
     }
   }
@@ -20,8 +22,7 @@ class HomeScreen extends Component {
       <Query pollInterval={500} query={GET_LOGOS}>
         {({ loading, error, data }) => {
           if (loading) return "Loading...";
-          if (error) return `Error! ${error.message}`;
-
+          if (error) return `Error! ${error.message} HomeScreen!`;
           return (
             <div className='container row'>
               <div className='col s4'>
@@ -32,7 +33,7 @@ class HomeScreen extends Component {
                     className='home_logo_link'
                     style={{ cursor: "pointer" }}
                   >
-                    <Link to={`/view/${logo._id}`}>{logo.text}</Link>
+                    <Link to={`/view/${logo._id}`}>{logo.text[0].text}</Link>
                   </div>
                 ))}
               </div>
@@ -44,7 +45,9 @@ class HomeScreen extends Component {
                 </div>
                 <div>
                   <Link id='add_logo_button' to='/create'>
-                    <button>Add Logo</button>
+                    <button type='button' class='btn btn-success'>
+                      Add Logo
+                    </button>
                   </Link>
                 </div>
               </div>

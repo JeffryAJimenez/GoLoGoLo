@@ -1,23 +1,26 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
 import "../App.css";
 import gql from "graphql-tag";
 import { Query, Mutation } from "react-apollo";
 import WorkSpace from "./WorkSpace";
+import { DropdownMenu, MenuItem } from "react-bootstrap-dropdown-menu";
 
 const GET_LOGO = gql`
   query logo($logoId: String) {
-    logo(id: $logoId) {
+    logo(_id: $logoId) {
       _id
-      text
-      color
+      text {
+        text
+        color
+        size
+      }
       backgroundColor
       borderColor
       borderRadius
       borderWidth
       padding
       margins
-      fontSize
       lastUpdate
     }
   }
@@ -40,6 +43,7 @@ class ViewLogoScreen extends Component {
         variables={{ logoId: this.props.match.params.id }}
       >
         {({ loading, error, data }) => {
+          console.log(JSON.stringify(data));
           if (loading) return "Loading...";
           if (error) return `Error! ${error.message}`;
 
@@ -56,12 +60,16 @@ class ViewLogoScreen extends Component {
                     </div>
                     <div className='panel-body'>
                       <dl>
-                        <dt>Text:</dt>
-                        <dd>{data.logo.text}</dd>
-                        <dt>Color:</dt>
-                        <dd>{data.logo.color}</dd>
-                        <dt>Font Size:</dt>
-                        <dd>{data.logo.fontSize}</dd>
+                        {data.logo.text.map((obj) => (
+                          <div className='myDIV'>
+                            <dt>Text:</dt>
+                            <dd>{obj.text}</dd>
+                            <dt>Color:</dt>
+                            <dd>{obj.color}</dd>
+                            <dt>Font Size:</dt>
+                            <dd>{obj.size}</dd>
+                          </div>
+                        ))}
                         <dt>Background Color:</dt>
                         <dd>{data.logo.backgroundColor}</dd>
                         <dt>Border Color:</dt>

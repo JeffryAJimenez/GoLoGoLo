@@ -1,7 +1,26 @@
 import React, { Fragment, useState } from "react";
 
-const Text = ({ data }) => {
+const Text = ({ data, index, callback, form, updateState }) => {
   const [displayTextProps, toggleTextProps] = useState(false);
+
+  console.log(data.text);
+  console.log(index);
+
+  const update = (e) => {
+    data[e.target.name] = e.target.value;
+    callback(data, index, form);
+  };
+
+  const remove = () => {
+    if (form) {
+      if (form.logo.text.length > 1) {
+        form.logo.text.splice(index, 1);
+        updateState();
+      }
+    } else {
+      updateState();
+    }
+  };
 
   return (
     <Fragment>
@@ -13,10 +32,14 @@ const Text = ({ data }) => {
           name='text'
           placeholder='Text'
           defaultValue={data.text}
+          onChange={(e) => update(e)}
         />
       </div>
       <button onClick={() => toggleTextProps(!displayTextProps)} type='button'>
         Display Text Props
+      </button>
+      <button onClick={() => remove()} type='button'>
+        Delete Text
       </button>
 
       {displayTextProps && (
@@ -29,6 +52,7 @@ const Text = ({ data }) => {
               name='color'
               placeholder='color'
               defaultValue={data.color}
+              onChange={(e) => update(e)}
             />
           </div>
           <div className='form-group'>
@@ -36,9 +60,10 @@ const Text = ({ data }) => {
             <input
               type='number'
               className='form-control'
-              name='fontSize'
+              name='size'
               placeholder='Font Size'
               defaultValue={data.size}
+              onChange={(e) => update(e)}
               min='2'
               max='144'
               required

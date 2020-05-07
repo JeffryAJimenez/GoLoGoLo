@@ -28,7 +28,6 @@ const TextTypeInput = new GraphQLInputObjectType({
     text: { type: GraphQLNonNull(GraphQLString) },
     color: { type: GraphQLNonNull(GraphQLString) },
     size: { type: GraphQLNonNull(GraphQLInt) },
-    // id: { type: GraphQLNonNull(GraphQLString) },
   }),
 });
 
@@ -63,6 +62,12 @@ const logoType = new GraphQLObjectType({
       type: GraphQLInt,
     },
     margins: {
+      type: GraphQLInt,
+    },
+    width: {
+      type: GraphQLInt,
+    },
+    height: {
       type: GraphQLInt,
     },
     lastUpdate: {
@@ -119,16 +124,9 @@ const RootMutationType = new GraphQLObjectType({
         borderWidth: { type: GraphQLNonNull(GraphQLInt) },
         padding: { type: GraphQLNonNull(GraphQLInt) },
         margins: { type: GraphQLNonNull(GraphQLInt) },
+        width: { type: GraphQLNonNull(GraphQLInt) },
+        height: { type: GraphQLNonNull(GraphQLInt) },
       },
-      // resolve: (parent, args) => {
-      //   const logo = {
-      //     ...args,
-      //     _id: logos.length + 1,
-      //     text: JSON.parse(JSON.stringify(args.text)),
-      //   };
-      //   console.log(logo);
-      //   return logo;
-      // },
 
       resolve: function (root, params) {
         const test = {
@@ -158,12 +156,10 @@ const RootMutationType = new GraphQLObjectType({
         borderWidth: { type: GraphQLNonNull(GraphQLInt) },
         padding: { type: GraphQLNonNull(GraphQLInt) },
         margins: { type: GraphQLNonNull(GraphQLInt) },
+        width: { type: GraphQLNonNull(GraphQLInt) },
+        height: { type: GraphQLNonNull(GraphQLInt) },
       },
-      // resolve: (_, args) => {
-      //   var logo = logos.find((logo) => args._id === logos._id);
-      //   logo = { ...args, text: JSON.parse(JSON.stringify(args.text)) };
-      //   return logos.find((logo) => args._id === logos._id);
-      // },
+
       resolve(root, params) {
         return LogoModel.findByIdAndUpdate(
           params._id,
@@ -175,6 +171,8 @@ const RootMutationType = new GraphQLObjectType({
             borderWidth: params.borderWidth,
             padding: params.padding,
             margins: params.margins,
+            width: params.width,
+            height: params.height,
             lastUpdate: new Date(),
           },
           function (err) {

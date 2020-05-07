@@ -3,29 +3,30 @@ import gql from "graphql-tag";
 import { Mutation } from "react-apollo";
 import { Link } from "react-router-dom";
 import WorkSpace from "./WorkSpace";
+import Text from "./editScreenLayout/Text";
 
 const ADD_LOGO = gql`
   mutation AddLogo(
-    $text: String!
-    $color: String!
-    $fontSize: Int!
+    $text: [TextInput!]
     $backgroundColor: String!
     $borderColor: String!
     $borderRadius: Int!
     $borderWidth: Int!
     $padding: Int!
     $margins: Int!
+    $width: Int!
+    $height: Int!
   ) {
     addLogo(
       text: $text
-      color: $color
-      fontSize: $fontSize
       backgroundColor: $backgroundColor
       borderColor: $borderColor
       borderRadius: $borderRadius
       borderWidth: $borderWidth
       padding: $padding
       margins: $margins
+      width: $width
+      height: $height
     ) {
       _id
     }
@@ -37,8 +38,7 @@ class CreateLogoScreen extends Component {
     super(props);
     this.state = {
       logo: {
-        text: "",
-        color: "#000000",
+        text: [{ text: "John Doe", color: "#000000", size: 12 }],
         backgroundColor: "#ffffff",
         borderColor: "#000000",
         borderRadius: "0",
@@ -46,9 +46,26 @@ class CreateLogoScreen extends Component {
         padding: "0",
         margins: "0",
         fontSize: "69",
+        width: "69",
+        height: "69",
       },
     };
   }
+
+  textUpdate = (text, index, data) => {
+    let textForm = this.state.logo.text;
+    textForm[index] = text;
+    let logo = { ...this.state.logo, text: textForm };
+    this.setState({ logo });
+  };
+
+  update = (index) => {
+    if (this.state.logo.text.length > 1) {
+      let textForm = this.state.logo.text.splice(index, 1);
+      let logo = { ...this.state.logo, text: textForm };
+      this.setState({ logo });
+    }
+  };
 
   onChange = (e) => {
     let logo = this.state.logo;
@@ -58,25 +75,30 @@ class CreateLogoScreen extends Component {
   };
 
   checkString = (value) => {
-    for (var i = 0; i < value.length; i++) {
-      if (value.charAt(i) !== " ") {
-        return value;
+    console.log(value);
+    value.map((obj) => {
+      for (var i = 0; i < obj.text.length; i++) {
+        console.log(obj.text);
+        if (obj.text.charAt(i) !== " ") {
+          return value;
+        }
       }
-    }
+
+      return [];
+    });
 
     return;
   };
 
   render() {
-    let text,
-      color,
-      fontSize,
-      backgroundColor,
+    let backgroundColor,
       borderColor,
       borderRadius,
       borderWidth,
       padding,
-      margins;
+      margins,
+      width,
+      height;
     return (
       <Mutation
         mutation={ADD_LOGO}
@@ -99,72 +121,41 @@ class CreateLogoScreen extends Component {
                         e.preventDefault();
                         addLogo({
                           variables: {
-                            text: this.checkString(text.value),
-                            color: color.value,
-                            fontSize: parseInt(fontSize.value),
+                            text: this.state.logo.text.map((obj) => {
+                              const size = parseInt(obj.size);
+                              obj.size = size;
+                              return obj;
+                            }),
                             backgroundColor: backgroundColor.value,
                             borderColor: borderColor.value,
                             borderRadius: parseInt(borderRadius.value),
                             borderWidth: parseInt(borderWidth.value),
                             padding: parseInt(padding.value),
                             margins: parseInt(margins.value),
+                            width: parseInt(width.value),
+                            height: parseInt(height.value),
                           },
                         });
-                        text.value = "";
-                        color.value = "";
-                        fontSize.value = "";
+
                         backgroundColor = "";
                         borderColor = "";
                         borderRadius = "";
                         borderWidth = "";
                         padding = "";
                         margins = "";
+                        width = "";
+                        height = "";
                       }}
                     >
-                      <div className='form-group'>
-                        <label htmlFor='text'>Text:</label>
-                        <input
-                          type='text'
-                          className='form-control'
-                          name='text'
-                          onChange={(e) => this.onChange(e)}
-                          ref={(node) => {
-                            text = node;
-                          }}
-                          placeholder='Text'
-                          required
+                      {this.state.logo.text.map((obj, index) => (
+                        <Text
+                          data={obj}
+                          index={index}
+                          callback={this.textUpdate}
+                          updateState={this.update}
                         />
-                      </div>
-                      <div className='form-group'>
-                        <label htmlFor='color'>Color:</label>
-                        <input
-                          type='color'
-                          className='form-control'
-                          name='color'
-                          onChange={(e) => this.onChange(e)}
-                          ref={(node) => {
-                            color = node;
-                          }}
-                          placeholder='Color'
-                          required
-                        />
-                      </div>
-                      <div className='form-group'>
-                        <label htmlFor='fontSize'>Font Size:</label>
-                        <input
-                          type='number'
-                          className='form-control'
-                          name='fontSize'
-                          onChange={(e) => this.onChange(e)}
-                          ref={(node) => {
-                            fontSize = node;
-                          }}
-                          placeholder='Font Size'
-                          min='2'
-                          max='144'
-                          required
-                        />
-                      </div>
+                      ))}
+
                       <div className='form-group'>
                         <label htmlFor='backgroundColor'>
                           background Color:
@@ -259,6 +250,37 @@ class CreateLogoScreen extends Component {
                           placeholder='Margins'
                           min='0'
                           max='144'
+                          required
+                        />
+                      </div>
+                      <div className='form-group'>
+                        <label htmlFor='borderWidth'>Logo's Width:</label>
+                        <input
+                          type='number'
+                          className='form-control'
+                          name='width'
+                          onChange={(e) => this.onChange(e)}
+                          ref={(node) => {
+                            width = node;
+                          }}
+                          placeholder='Logo Width'
+                          min='0'
+                          required
+                        />
+                      </div>
+
+                      <div className='form-group'>
+                        <label htmlFor='borderWidth'>Logo's Height:</label>
+                        <input
+                          type='number'
+                          className='form-control'
+                          name='height'
+                          onChange={(e) => this.onChange(e)}
+                          ref={(node) => {
+                            height = node;
+                          }}
+                          placeholder='Logo height'
+                          min='0'
                           required
                         />
                       </div>

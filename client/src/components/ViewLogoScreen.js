@@ -21,6 +21,8 @@ const GET_LOGO = gql`
       borderWidth
       padding
       margins
+      width
+      height
       lastUpdate
     }
   }
@@ -28,7 +30,7 @@ const GET_LOGO = gql`
 
 const DELETE_LOGO = gql`
   mutation removeLogo($id: String!) {
-    removeLogo(id: $id) {
+    removeLogo(_id: $id) {
       _id
     }
   }
@@ -82,6 +84,10 @@ class ViewLogoScreen extends Component {
                         <dd>{data.logo.padding}</dd>
                         <dt>Margins:</dt>
                         <dd>{data.logo.margins}</dd>
+                        <dt>Logo's Width:</dt>
+                        <dd>{data.logo.width}</dd>
+                        <dt>Logo's Height:</dt>
+                        <dd>{data.logo.height}</dd>
                         <dt>Last Updated:</dt>
                         <dd>{data.logo.lastUpdate}</dd>
                       </dl>

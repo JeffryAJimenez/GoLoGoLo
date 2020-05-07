@@ -10,6 +10,8 @@ class WorkSpace extends Component {
       borderWidth,
       padding,
       margins,
+      width,
+      height,
     } = this.props.data.logo;
 
     const styles = {
@@ -21,6 +23,8 @@ class WorkSpace extends Component {
         borderWidth: borderWidth + "pt",
         padding: padding + "pt",
         margin: margins + "pt",
+        width: width + "pt",
+        height: height + "pt",
       },
     };
 

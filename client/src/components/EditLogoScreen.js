@@ -20,6 +20,8 @@ const GET_LOGO = gql`
       borderWidth
       padding
       margins
+      width
+      height
       lastUpdate
     }
   }
@@ -28,16 +30,18 @@ const GET_LOGO = gql`
 const UPDATE_LOGO = gql`
   mutation updateLogo(
     $id: String!
-    $text: [Text]!
+    $text: [TextInput!]
     $backgroundColor: String!
     $borderColor: String!
     $borderRadius: Int!
     $borderWidth: Int!
     $padding: Int!
     $margins: Int!
+    $width: Int!
+    $height: Int!
   ) {
     updateLogo(
-      id: $id
+      _id: $id
       text: $text
       backgroundColor: $backgroundColor
       borderColor: $borderColor
@@ -45,15 +49,11 @@ const UPDATE_LOGO = gql`
       borderWidth: $borderWidth
       padding: $padding
       margins: $margins
+      width: $width
+      height: $height
     ) {
       lastUpdate
     }
-  }
-
-  type Text {
-    text: String!
-    color: String!
-    size: Int!
   }
 `;
 
@@ -68,16 +68,31 @@ class EditLogoScreen extends Component {
     this.setState({});
   };
 
+  textUpdate = (text, index, data) => {
+    data.logo.text[index] = text;
+    this.setState({});
+  };
+
+  addText = (data) => {
+    const dummy = { text: "John Doe", color: "#ffffff", size: 14 };
+    const texts = [...data.logo.text, dummy];
+    data.logo.text = texts;
+    this.setState({});
+  };
+
+  update = () => {
+    this.setState({});
+  };
+
   render() {
-    let text,
-      //color,
-      //fontSize,
-      backgroundColor,
+    let backgroundColor,
       borderColor,
       borderRadius,
       borderWidth,
       padding,
-      margins;
+      margins,
+      height,
+      width;
     return (
       <Query
         query={GET_LOGO}
@@ -87,7 +102,7 @@ class EditLogoScreen extends Component {
         {({ loading, error, data }) => {
           if (loading) return "Loading...";
           if (error) return `Error! ${error.message}`;
-          console.log(data.logo.text);
+          console.log(data.logo.height);
 
           return (
             <Mutation
@@ -107,36 +122,50 @@ class EditLogoScreen extends Component {
                     <div className='row'>
                       <div className='col-'>
                         <div className='panel-body'>
+                          <button onClick={() => this.addText(data)}>
+                            Add Text
+                          </button>
                           <form
                             onSubmit={(e) => {
                               e.preventDefault();
                               updateLogo({
                                 variables: {
                                   id: data.logo._id,
-                                  text: data.logo.text,
-                                  //color: color.value,
-                                  //fontSize: parseInt(fontSize.value),
+                                  text: data.logo.text.map((obj) => {
+                                    const { __typename, ...other } = obj;
+                                    const size = parseInt(other.size);
+                                    other.size = size;
+                                    return other;
+                                  }),
                                   backgroundColor: backgroundColor.value,
                                   borderColor: borderColor.value,
                                   borderRadius: parseInt(borderRadius.value),
                                   borderWidth: parseInt(borderWidth.value),
                                   padding: parseInt(padding.value),
                                   margins: parseInt(margins.value),
+                                  width: parseInt(width.value),
+                                  height: parseInt(height.value),
                                 },
                               });
-                              /*text.value = "";*/
-                              //color.value = "";
-                              //fontSize.value = "";
+
                               backgroundColor = "";
                               borderColor = "";
                               borderRadius = "";
                               borderWidth = "";
                               padding = "";
                               margins = "";
+                              width = "";
+                              height = "";
                             }}
                           >
-                            {data.logo.text.map((obj) => (
-                              <Text data={obj} />
+                            {data.logo.text.map((obj, index) => (
+                              <Text
+                                data={obj}
+                                index={index}
+                                callback={this.textUpdate}
+                                updateState={this.update}
+                                form={data}
+                              />
                             ))}
                             <div className='form-group'>
                               <label htmlFor='backgroundColor'>
@@ -239,6 +268,40 @@ class EditLogoScreen extends Component {
                                 required
                               />
                             </div>
+                            <div className='form-group'>
+                              <label htmlFor='borderWidth'>Logo Width:</label>
+                              <input
+                                type='number'
+                                className='form-control'
+                                name='width'
+                                onChange={(e) => this.onChange(e, data)}
+                                ref={(node) => {
+                                  width = node;
+                                }}
+                                placeholder='Logo Width'
+                                defaultValue={data.logo.width}
+                                min='0'
+                                required
+                              />
+                            </div>
+
+                            <div className='form-group'>
+                              <label htmlFor='borderWidth'>Logo Height:</label>
+                              <input
+                                type='number'
+                                className='form-control'
+                                name='height'
+                                onChange={(e) => this.onChange(e, data)}
+                                ref={(node) => {
+                                  height = node;
+                                }}
+                                placeholder='Logo height'
+                                defaultValue={data.logo.height}
+                                min='0'
+                                required
+                              />
+                            </div>
+
                             <button type='submit' className='btn btn-success'>
                               Submit
                             </button>

@@ -84,6 +84,26 @@ class EditLogoScreen extends Component {
     this.setState({});
   };
 
+  moveText = (pos, destination, data) => {
+    if (destination < 0) {
+      console.log("destination: ", destination);
+    } else if (destination > data.logo.text.length - 1) {
+      console.log("destination: ", destination);
+    } else {
+      console.log("Before Change: ", data.logo.text);
+      const texts = [...data.logo.text];
+
+      const textObj = Object.assign({}, texts[pos]);
+      texts[pos] = Object.assign({}, texts[destination]);
+      texts[destination] = Object.assign({}, textObj);
+
+      data.logo.text = [...texts];
+      console.log("After Change: ", data.logo.text);
+    }
+
+    this.setState({});
+  };
+
   render() {
     let backgroundColor,
       borderColor,
@@ -165,6 +185,7 @@ class EditLogoScreen extends Component {
                                 callback={this.textUpdate}
                                 updateState={this.update}
                                 form={data}
+                                move={this.moveText}
                               />
                             ))}
                             <div className='form-group'>

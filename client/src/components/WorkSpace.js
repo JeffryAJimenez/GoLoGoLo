@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Rnd } from "react-rnd";
 
 class WorkSpace extends Component {
   render() {
@@ -28,13 +29,21 @@ class WorkSpace extends Component {
       },
     };
 
-    console.log(text);
     return (
       <div style={styles.container}>
-        {text.map((obj) => (
-          <div style={{ fontSize: obj.size + "pt", color: obj.color }}>
+        {text.map((obj, index) => (
+          <Rnd
+            style={{
+              zIndex: text.length - index,
+              fontSize: obj.size + "pt",
+              color: obj.color,
+              position: "absolute",
+              cursor: "move",
+            }}
+            bounds='parent'
+          >
             {obj.text}
-          </div>
+          </Rnd>
         ))}
       </div>
     );

@@ -52,6 +52,35 @@ class CreateLogoScreen extends Component {
     };
   }
 
+  moveText = (pos, destination, data) => {
+    if (destination < 0) {
+      console.log("destination: ", destination);
+    } else if (destination > this.state.logo.text.length - 1) {
+      console.log("destination: ", destination);
+    } else {
+      console.log("Before Change: ", this.state.logo.text);
+      const texts = [...this.state.logo.text];
+
+      const textObj = Object.assign({}, texts[pos]);
+      texts[pos] = Object.assign({}, texts[destination]);
+      texts[destination] = Object.assign({}, textObj);
+
+      // data.logo.text = [...texts];
+      let logo = { ...this.state.logo, text: texts };
+
+      this.setState({ logo });
+      console.log("After Change: ", this.state.logo.text);
+    }
+  };
+
+  addText = (data) => {
+    const dummy = { text: "John Doe", color: "#000000", size: 14 };
+    const texts = [...data.logo.text, dummy];
+    let logo = { ...this.state.logo, text: texts };
+
+    this.setState({ logo });
+  };
+
   textUpdate = (text, index, data) => {
     let textForm = this.state.logo.text;
     textForm[index] = text;
@@ -116,6 +145,9 @@ class CreateLogoScreen extends Component {
                     <h3 className='panel-title'>Create Logo</h3>
                   </div>
                   <div className='panel-body'>
+                    <button onClick={() => this.addText(this.state)}>
+                      Add Text
+                    </button>
                     <form
                       onSubmit={(e) => {
                         e.preventDefault();
@@ -153,6 +185,7 @@ class CreateLogoScreen extends Component {
                           index={index}
                           callback={this.textUpdate}
                           updateState={this.update}
+                          move={this.moveText}
                         />
                       ))}
 

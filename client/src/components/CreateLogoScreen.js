@@ -38,7 +38,7 @@ class CreateLogoScreen extends Component {
     super(props);
     this.state = {
       logo: {
-        text: [{ text: "John Doe", color: "#000000", size: 12 }],
+        text: [{ text: "John Doe", color: "#000000", size: 22, x: 0, y: 0 }],
         backgroundColor: "#ffffff",
         borderColor: "#000000",
         borderRadius: "0",
@@ -46,11 +46,21 @@ class CreateLogoScreen extends Component {
         padding: "0",
         margins: "0",
         fontSize: "69",
-        width: "69",
-        height: "69",
+        width: "200",
+        height: "200",
       },
     };
   }
+
+  changeXY = (x, y, index, form) => {
+    let texts = [...this.state.logo.text];
+    texts[index].x = x;
+    texts[index].y = y;
+
+    let logo = { ...this.state.logo, text: texts };
+
+    this.setState({ logo });
+  };
 
   moveText = (pos, destination, data) => {
     if (destination < 0) {
@@ -74,7 +84,7 @@ class CreateLogoScreen extends Component {
   };
 
   addText = (data) => {
-    const dummy = { text: "John Doe", color: "#000000", size: 14 };
+    const dummy = { text: "John Doe", color: "#000000", size: 24, x: 0, y: 0 };
     const texts = [...data.logo.text, dummy];
     let logo = { ...this.state.logo, text: texts };
 
@@ -329,7 +339,7 @@ class CreateLogoScreen extends Component {
                   </div>
                 </div>
               </div>
-              <WorkSpace data={this.state} />
+              <WorkSpace data={this.state} changeXY={this.changeXY} />
             </div>
           </div>
         )}

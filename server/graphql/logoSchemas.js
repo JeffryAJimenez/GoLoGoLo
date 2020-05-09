@@ -17,6 +17,8 @@ const TextType = new GraphQLObjectType({
     text: { type: GraphQLString },
     color: { type: GraphQLString },
     size: { type: GraphQLInt },
+    x: { type: GraphQLInt },
+    y: { type: GraphQLInt },
     id: { type: GraphQLString },
   }),
 });
@@ -28,6 +30,8 @@ const TextTypeInput = new GraphQLInputObjectType({
     text: { type: GraphQLNonNull(GraphQLString) },
     color: { type: GraphQLNonNull(GraphQLString) },
     size: { type: GraphQLNonNull(GraphQLInt) },
+    x: { type: GraphQLInt },
+    y: { type: GraphQLInt },
   }),
 });
 

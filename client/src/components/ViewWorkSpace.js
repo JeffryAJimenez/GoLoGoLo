@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { Rnd } from "react-rnd";
 
-class WorkSpace extends Component {
+class ViewWorkSpace extends Component {
   render() {
     const {
       text,
@@ -33,29 +32,23 @@ class WorkSpace extends Component {
     return (
       <div style={styles.container}>
         {text.map((obj, index) => (
-          <Rnd
-            position={{
-              x: obj.x,
-              y: obj.y,
-            }}
+          <div
             style={{
               zIndex: text.length - index,
               fontSize: obj.size + "pt",
               color: obj.color,
               position: "absolute",
               cursor: "move",
-            }}
-            bounds='parent'
-            onDragStop={(e, d) => {
-              this.props.changeXY(d.x, d.y, index, this.props.data);
+              top: obj.y + "px",
+              left: obj.x + "px",
             }}
           >
             {obj.text}
-          </Rnd>
+          </div>
         ))}
       </div>
     );
   }
 }
 
-export default WorkSpace;
+export default ViewWorkSpace;

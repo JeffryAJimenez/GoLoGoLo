@@ -13,6 +13,8 @@ const GET_LOGO = gql`
         text
         color
         size
+        x
+        y
       }
       backgroundColor
       borderColor
@@ -73,8 +75,19 @@ class EditLogoScreen extends Component {
     this.setState({});
   };
 
+  changeXY = (x, y, index, form) => {
+    let texts = form.logo.text;
+    texts[index].x = x;
+    texts[index].y = y;
+
+    form.logo.text = texts;
+
+    console.log(form.logo.text);
+    this.setState({});
+  };
+
   addText = (data) => {
-    const dummy = { text: "John Doe", color: "#ffffff", size: 14 };
+    const dummy = { text: "John Doe", color: "#ffffff", size: 24, x: 0, y: 0 };
     const texts = [...data.logo.text, dummy];
     data.logo.text = texts;
     this.setState({});
@@ -122,7 +135,6 @@ class EditLogoScreen extends Component {
         {({ loading, error, data }) => {
           if (loading) return "Loading...";
           if (error) return `Error! ${error.message}`;
-          console.log(data.logo.height);
 
           return (
             <Mutation
@@ -154,7 +166,11 @@ class EditLogoScreen extends Component {
                                   text: data.logo.text.map((obj) => {
                                     const { __typename, ...other } = obj;
                                     const size = parseInt(other.size);
+                                    const x = parseInt(other.x);
+                                    const y = parseInt(other.y);
                                     other.size = size;
+                                    other.x = x;
+                                    other.y = y;
                                     return other;
                                   }),
                                   backgroundColor: backgroundColor.value,
@@ -331,7 +347,7 @@ class EditLogoScreen extends Component {
                           {error && <p>Error :( Please try again</p>}
                         </div>
                       </div>
-                      <WorkSpace data={data} />
+                      <WorkSpace data={data} changeXY={this.changeXY} />
                     </div>
                   </div>
                 </div>

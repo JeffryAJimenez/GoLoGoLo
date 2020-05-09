@@ -3,9 +3,6 @@ import React, { Fragment, useState } from "react";
 const Text = ({ data, index, callback, form, updateState, move }) => {
   const [displayTextProps, toggleTextProps] = useState(false);
 
-  console.log("TextData: ", data);
-  console.log("Text Form: ", form);
-
   const update = (e) => {
     data[e.target.name] = e.target.value;
     callback(data, index, form);

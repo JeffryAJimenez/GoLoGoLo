@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "../App.css";
 import gql from "graphql-tag";
 import { Query, Mutation } from "react-apollo";
-import WorkSpace from "./WorkSpace";
+import ViewWorkSpace from "./ViewWorkSpace";
 import { DropdownMenu, MenuItem } from "react-bootstrap-dropdown-menu";
 
 const GET_LOGO = gql`
@@ -14,6 +14,8 @@ const GET_LOGO = gql`
         text
         color
         size
+        x
+        y
       }
       backgroundColor
       borderColor
@@ -125,7 +127,7 @@ class ViewLogoScreen extends Component {
                     </div>
                   </div>
                 </div>
-                <WorkSpace data={data} />
+                <ViewWorkSpace data={data} />
               </div>
             </div>
           );

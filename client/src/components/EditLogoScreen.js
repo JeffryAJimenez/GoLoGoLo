@@ -4,6 +4,7 @@ import gql from "graphql-tag";
 import { Query, Mutation } from "react-apollo";
 import WorkSpace from "./WorkSpace";
 import Text from "./editScreenLayout/Text";
+import Image from "./editScreenLayout/Images";
 
 const GET_LOGO = gql`
   query logo($logoId: String) {
@@ -24,6 +25,13 @@ const GET_LOGO = gql`
       margins
       width
       height
+      img {
+        url
+        x
+        y
+        height
+        width
+      }
       lastUpdate
     }
   }
@@ -41,6 +49,7 @@ const UPDATE_LOGO = gql`
     $margins: Int!
     $width: Int!
     $height: Int!
+    $img: [ImageInput]
   ) {
     updateLogo(
       _id: $id
@@ -53,6 +62,7 @@ const UPDATE_LOGO = gql`
       margins: $margins
       width: $width
       height: $height
+      img: $img
     ) {
       lastUpdate
     }
@@ -75,6 +85,11 @@ class EditLogoScreen extends Component {
     this.setState({});
   };
 
+  ImageUpdate = (img, index, data) => {
+    data.logo.img[index] = img;
+    this.setState({});
+  };
+
   changeXY = (x, y, index, form) => {
     let texts = form.logo.text;
     texts[index].x = x;
@@ -82,7 +97,26 @@ class EditLogoScreen extends Component {
 
     form.logo.text = texts;
 
-    console.log(form.logo.text);
+    this.setState({});
+  };
+
+  imgXY = (x, y, index, form) => {
+    let images = form.logo.img;
+    images[index].x = x;
+    images[index].y = y;
+
+    form.logo.img = images;
+
+    this.setState({});
+  };
+
+  changeImgSize = (height, width, index, form) => {
+    let images = form.logo.img;
+    images[index].height = height;
+    images[index].width = width;
+
+    form.logo.img = images;
+
     this.setState({});
   };
 
@@ -90,6 +124,13 @@ class EditLogoScreen extends Component {
     const dummy = { text: "John Doe", color: "#ffffff", size: 24, x: 0, y: 0 };
     const texts = [...data.logo.text, dummy];
     data.logo.text = texts;
+    this.setState({});
+  };
+
+  addImage = (data) => {
+    const dummy = { url: "", x: 0, y: 0 };
+    const images = [...data.logo.img, dummy];
+    data.logo.img = images;
     this.setState({});
   };
 
@@ -112,6 +153,25 @@ class EditLogoScreen extends Component {
 
       data.logo.text = [...texts];
       console.log("After Change: ", data.logo.text);
+    }
+
+    this.setState({});
+  };
+  moveImage = (pos, destination, data) => {
+    if (destination < 0) {
+      console.log("destination: ", destination);
+    } else if (destination > data.logo.img.length - 1) {
+      console.log("destination: ", destination);
+    } else {
+      console.log("Before Change: ", data.logo.img);
+      const images = [...data.logo.img];
+
+      const imgObj = Object.assign({}, images[pos]);
+      images[pos] = Object.assign({}, images[destination]);
+      images[destination] = Object.assign({}, imgObj);
+
+      data.logo.img = [...images];
+      console.log("After Change: ", data.logo.img);
     }
 
     this.setState({});
@@ -181,6 +241,19 @@ class EditLogoScreen extends Component {
                                   margins: parseInt(margins.value),
                                   width: parseInt(width.value),
                                   height: parseInt(height.value),
+                                  img: data.logo.img.map((obj) => {
+                                    const { __typename, ...other } = obj;
+                                    const x = parseInt(other.x);
+                                    const y = parseInt(other.y);
+                                    const width = parseInt(other.width);
+                                    const height = parseInt(other.height);
+
+                                    other.x = x;
+                                    other.y = y;
+                                    other.width = width;
+                                    other.height = height;
+                                    return other;
+                                  }),
                                 },
                               });
 
@@ -338,6 +411,24 @@ class EditLogoScreen extends Component {
                                 required
                               />
                             </div>
+                            <button
+                              type='button'
+                              onClick={() => this.addImage(data)}
+                            >
+                              Add Image
+                            </button>
+
+                            {data.logo.img &&
+                              data.logo.img.map((obj, index) => (
+                                <Image
+                                  data={obj}
+                                  index={index}
+                                  callback={this.ImageUpdate}
+                                  updateState={this.update}
+                                  form={data}
+                                  move={this.moveImage}
+                                />
+                              ))}
 
                             <button type='submit' className='btn btn-success'>
                               Submit
@@ -347,7 +438,12 @@ class EditLogoScreen extends Component {
                           {error && <p>Error :( Please try again</p>}
                         </div>
                       </div>
-                      <WorkSpace data={data} changeXY={this.changeXY} />
+                      <WorkSpace
+                        data={data}
+                        changeXY={this.changeXY}
+                        imgXY={this.imgXY}
+                        changeImgSize={this.changeImgSize}
+                      />
                     </div>
                   </div>
                 </div>

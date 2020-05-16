@@ -4,6 +4,7 @@ import { Mutation } from "react-apollo";
 import { Link } from "react-router-dom";
 import WorkSpace from "./WorkSpace";
 import Text from "./editScreenLayout/Text";
+import Image from "./editScreenLayout/Images";
 
 const ADD_LOGO = gql`
   mutation AddLogo(
@@ -16,6 +17,7 @@ const ADD_LOGO = gql`
     $margins: Int!
     $width: Int!
     $height: Int!
+    $img: [ImageInput]
   ) {
     addLogo(
       text: $text
@@ -27,6 +29,7 @@ const ADD_LOGO = gql`
       margins: $margins
       width: $width
       height: $height
+      img: $img
     ) {
       _id
     }
@@ -48,6 +51,7 @@ class CreateLogoScreen extends Component {
         fontSize: "69",
         width: "200",
         height: "200",
+        img: [],
       },
     };
   }
@@ -58,6 +62,26 @@ class CreateLogoScreen extends Component {
     texts[index].y = y;
 
     let logo = { ...this.state.logo, text: texts };
+
+    this.setState({ logo });
+  };
+
+  imgXY = (x, y, index, form) => {
+    let images = [...this.state.logo.img];
+    images[index].x = x;
+    images[index].y = y;
+
+    let logo = { ...this.state.logo, img: images };
+
+    this.setState({ logo });
+  };
+
+  changeImgSize = (height, width, index, form) => {
+    let images = [...this.state.logo.img];
+    images[index].height = height;
+    images[index].width = width;
+
+    let logo = { ...this.state.logo, img: images };
 
     this.setState({ logo });
   };
@@ -83,10 +107,35 @@ class CreateLogoScreen extends Component {
     }
   };
 
+  moveImage = (pos, destination, data) => {
+    if (destination < 0) {
+      console.log("destination: ", destination);
+    } else if (destination > this.state.logo.img.length - 1) {
+      console.log("destination: ", destination);
+    } else {
+      const images = [...this.state.logo.img];
+
+      const imgObj = Object.assign({}, images[pos]);
+      images[pos] = Object.assign({}, images[destination]);
+      images[destination] = Object.assign({}, imgObj);
+
+      let logo = { ...this.state.logo, img: images };
+      this.setState({ logo });
+    }
+  };
+
   addText = (data) => {
     const dummy = { text: "John Doe", color: "#000000", size: 24, x: 0, y: 0 };
     const texts = [...data.logo.text, dummy];
     let logo = { ...this.state.logo, text: texts };
+
+    this.setState({ logo });
+  };
+
+  addImage = (data) => {
+    const dummy = { url: "", x: 0, y: 0, height: 40, width: 40 };
+    const images = [...data.logo.img, dummy];
+    let logo = { ...this.state.logo, img: images };
 
     this.setState({ logo });
   };
@@ -98,12 +147,25 @@ class CreateLogoScreen extends Component {
     this.setState({ logo });
   };
 
+  ImageUpdate = (img, index, data) => {
+    let imgForm = this.state.logo.img;
+    imgForm[index] = img;
+    let logo = { ...this.state.logo, img: imgForm };
+    this.setState({ logo });
+  };
+
   update = (index) => {
     if (this.state.logo.text.length > 1) {
       let textForm = this.state.logo.text.splice(index, 1);
       let logo = { ...this.state.logo, text: textForm };
       this.setState({ logo });
     }
+  };
+
+  updateImg = (index) => {
+    let imgForm = this.state.logo.img.splice(index, 1);
+    let logo = { ...this.state.logo, img: imgForm };
+    this.setState({ logo });
   };
 
   onChange = (e) => {
@@ -176,6 +238,18 @@ class CreateLogoScreen extends Component {
                             margins: parseInt(margins.value),
                             width: parseInt(width.value),
                             height: parseInt(height.value),
+                            img: this.state.logo.img.map((obj) => {
+                              const { __typename, ...other } = obj;
+                              const x = parseInt(other.x);
+                              const y = parseInt(other.y);
+                              const width = parseInt(other.width);
+                              const height = parseInt(other.height);
+                              other.x = x;
+                              other.y = y;
+                              other.width = width;
+                              other.height = height;
+                              return other;
+                            }),
                           },
                         });
 
@@ -328,6 +402,24 @@ class CreateLogoScreen extends Component {
                         />
                       </div>
 
+                      <button
+                        type='button'
+                        onClick={() => this.addImage(this.state)}
+                      >
+                        Add Image
+                      </button>
+
+                      {this.state.logo.img &&
+                        this.state.logo.img.map((obj, index) => (
+                          <Image
+                            data={obj}
+                            index={index}
+                            callback={this.ImageUpdate}
+                            updateState={this.updateImg}
+                            move={this.moveImage}
+                          />
+                        ))}
+
                       <button type='submit' className='btn btn-success'>
                         Submit
                       </button>
@@ -339,7 +431,12 @@ class CreateLogoScreen extends Component {
                   </div>
                 </div>
               </div>
-              <WorkSpace data={this.state} changeXY={this.changeXY} />
+              <WorkSpace
+                data={this.state}
+                changeXY={this.changeXY}
+                imgXY={this.imgXY}
+                changeImgSize={this.changeImgSize}
+              />
             </div>
           </div>
         )}

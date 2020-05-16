@@ -13,6 +13,7 @@ class WorkSpace extends Component {
       margins,
       width,
       height,
+      img,
     } = this.props.data.logo;
 
     const styles = {
@@ -53,6 +54,45 @@ class WorkSpace extends Component {
             {obj.text}
           </Rnd>
         ))}
+
+        {img &&
+          img.map((obj, index) => (
+            <Rnd
+              position={{
+                x: obj.x,
+                y: obj.y,
+              }}
+              style={{
+                zIndex: text.length - index,
+                position: "absolute",
+                cursor: "move",
+              }}
+              bounds='parent'
+              onDragStop={(e, d) => {
+                this.props.imgXY(d.x, d.y, index, this.props.data);
+              }}
+              size={
+                obj.height
+                  ? { width: obj.width, height: obj.height }
+                  : { width: 40, height: 40 }
+              }
+              onResizeStop={(e, direction, ref, delta, position) => {
+                this.props.changeImgSize(
+                  ref.style.height,
+                  ref.style.width,
+                  index,
+                  this.props.data
+                );
+              }}
+            >
+              <img
+                alt='test'
+                src={obj.url}
+                width={obj.width ? obj.width : 40}
+                height={obj.height ? obj.height : 40}
+              />
+            </Rnd>
+          ))}
       </div>
     );
   }

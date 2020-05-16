@@ -25,6 +25,13 @@ const GET_LOGO = gql`
       margins
       width
       height
+      img {
+        url
+        x
+        y
+        height
+        width
+      }
       lastUpdate
     }
   }
@@ -92,6 +99,12 @@ class ViewLogoScreen extends Component {
                         <dd>{data.logo.height}</dd>
                         <dt>Last Updated:</dt>
                         <dd>{data.logo.lastUpdate}</dd>
+                        {data.logo.img.map((obj) => (
+                          <div className='myDIV'>
+                            <dt>Image:</dt>
+                            <dd>{obj.url}</dd>
+                          </div>
+                        ))}
                       </dl>
                       <Mutation
                         mutation={DELETE_LOGO}

@@ -10,6 +10,30 @@ var GraphQLInt = require("graphql").GraphQLInt;
 var GraphQLDate = require("graphql-date");
 var LogoModel = require("../models/Logo");
 
+const ImageInputType = new GraphQLInputObjectType({
+  name: "ImageInput",
+  description: "This Represents an image INPUT field",
+  fields: () => ({
+    url: { type: GraphQLString },
+    x: { type: GraphQLInt },
+    y: { type: GraphQLInt },
+    height: { type: GraphQLInt },
+    width: { type: GraphQLInt },
+  }),
+});
+
+const ImageType = new GraphQLObjectType({
+  name: "ImageType",
+  description: "This Represents an image field",
+  fields: () => ({
+    url: { type: GraphQLString },
+    x: { type: GraphQLInt },
+    y: { type: GraphQLInt },
+    height: { type: GraphQLInt },
+    width: { type: GraphQLInt },
+  }),
+});
+
 const TextType = new GraphQLObjectType({
   name: "Text",
   description: "This represents a text field: Text, Color and Size",
@@ -74,6 +98,9 @@ const logoType = new GraphQLObjectType({
     height: {
       type: GraphQLInt,
     },
+
+    img: { type: GraphQLList(ImageType) },
+
     lastUpdate: {
       type: GraphQLDate,
     },
@@ -129,7 +156,10 @@ const RootMutationType = new GraphQLObjectType({
         padding: { type: GraphQLNonNull(GraphQLInt) },
         margins: { type: GraphQLNonNull(GraphQLInt) },
         width: { type: GraphQLNonNull(GraphQLInt) },
-        height: { type: GraphQLNonNull(GraphQLInt) },
+        height: {
+          type: GraphQLNonNull(GraphQLInt),
+        },
+        img: { type: GraphQLList(ImageInputType) },
       },
 
       resolve: function (root, params) {
@@ -162,6 +192,7 @@ const RootMutationType = new GraphQLObjectType({
         margins: { type: GraphQLNonNull(GraphQLInt) },
         width: { type: GraphQLNonNull(GraphQLInt) },
         height: { type: GraphQLNonNull(GraphQLInt) },
+        img: { type: GraphQLList(ImageInputType) },
       },
 
       resolve(root, params) {
@@ -177,6 +208,7 @@ const RootMutationType = new GraphQLObjectType({
             margins: params.margins,
             width: params.width,
             height: params.height,
+            img: params.img,
             lastUpdate: new Date(),
           },
           function (err) {

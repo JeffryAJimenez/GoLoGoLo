@@ -12,6 +12,7 @@ class ViewWorkSpace extends Component {
       margins,
       width,
       height,
+      img,
     } = this.props.data.logo;
 
     const styles = {
@@ -38,7 +39,7 @@ class ViewWorkSpace extends Component {
               fontSize: obj.size + "pt",
               color: obj.color,
               position: "absolute",
-              cursor: "move",
+
               top: obj.y + "px",
               left: obj.x + "px",
             }}
@@ -46,6 +47,23 @@ class ViewWorkSpace extends Component {
             {obj.text}
           </div>
         ))}
+
+        {img &&
+          img.map((obj, index) => (
+            <img
+              style={{
+                zIndex: text.length - index,
+
+                position: "absolute",
+                top: obj.y + "px",
+                left: obj.x + "px",
+              }}
+              alt='test'
+              src={obj.url}
+              width={obj.width ? obj.width : 40}
+              height={obj.height ? obj.height : 40}
+            />
+          ))}
       </div>
     );
   }

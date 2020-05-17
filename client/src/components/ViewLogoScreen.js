@@ -4,7 +4,7 @@ import "../App.css";
 import gql from "graphql-tag";
 import { Query, Mutation } from "react-apollo";
 import ViewWorkSpace from "./ViewWorkSpace";
-import { DropdownMenu, MenuItem } from "react-bootstrap-dropdown-menu";
+import html2canvas from "html2canvas";
 
 const GET_LOGO = gql`
   query logo($logoId: String) {
@@ -46,6 +46,35 @@ const DELETE_LOGO = gql`
 `;
 
 class ViewLogoScreen extends Component {
+  saveimage = (e) => {
+    html2canvas(document.querySelector("#boundary"), { allowTaint: true }).then(
+      (canvas) => {
+        console.log(canvas);
+        this.saveAs(canvas.toDataURL(), "file-name.png");
+      }
+    );
+  };
+
+  saveAs(uri, filename) {
+    var link = document.createElement("a");
+
+    if (typeof link.download === "string") {
+      link.href = uri;
+      link.download = filename;
+
+      //Firefox requires the link to be in the body
+      document.body.appendChild(link);
+
+      //simulate click
+      link.click();
+
+      //remove the link when done
+      document.body.removeChild(link);
+    } else {
+      window.open(uri);
+    }
+  }
+
   render() {
     return (
       <Query
@@ -65,7 +94,9 @@ class ViewLogoScreen extends Component {
                   <div className='panel panel-default'>
                     <div className='panel-heading'>
                       <h4>
-                        <Link to='/'>Home</Link>
+                        <button onClick={(e) => this.saveimage(e)}>
+                          Download
+                        </button>
                       </h4>
                       <h3 className='panel-title'>View Logo</h3>
                     </div>

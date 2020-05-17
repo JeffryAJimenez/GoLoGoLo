@@ -31,7 +31,7 @@ class ViewWorkSpace extends Component {
     };
 
     return (
-      <div style={styles.container}>
+      <div id='boundary' style={styles.container}>
         {text.map((obj, index) => (
           <div
             style={{

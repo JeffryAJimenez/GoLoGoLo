@@ -61,7 +61,7 @@ const Text = ({ data, index, callback, form, updateState, move }) => {
           onClick={() => toggleTextProps(!displayTextProps)}
           type='button'
         >
-          Display Text Props
+          {displayTextProps ? "Hide Text Props" : "Display Text Porps"}
         </button>
         <button onClick={() => remove()} type='button'>
           Delete Text

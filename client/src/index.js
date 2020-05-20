@@ -11,6 +11,8 @@ import HomeScreen from "./components/HomeScreen";
 import EditLogoScreen from "./components/EditLogoScreen";
 import CreateLogoScreen from "./components/CreateLogoScreen";
 import ViewLogoScreen from "./components/ViewLogoScreen";
+import LogInScreen from "./components/LogInScreen";
+import RegisterScreen from "./components/RegisterScreen";
 import Navbar from "./components/layout/Navbar";
 const client = new ApolloClient({ uri: "http://localhost:3000/graphql" });
 
@@ -20,6 +22,8 @@ ReactDOM.render(
       <Navbar />
       <section className='container'>
         <Route exact path='/' component={HomeScreen} />
+        <Route path='/login' component={LogInScreen} />
+        <Route path='/register' component={RegisterScreen} />
         <Route path='/edit/:id' component={EditLogoScreen} />
         <Route path='/create' component={CreateLogoScreen} />
         <Route path='/view/:id' component={ViewLogoScreen} />

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 const navStyle = {
   backgroundColor: "#72bb53",
+  marginBottom: "20px",
 };
 
 const Navbar = () => {
@@ -27,7 +28,7 @@ const Navbar = () => {
       style={navStyle}
     >
       <Link class='navbar-brand' to='/'>
-        GoLoGoLo
+        GoLoGoLo Home
       </Link>
 
       <button

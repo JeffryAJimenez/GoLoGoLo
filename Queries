@@ -1,0 +1,101 @@
+query GetAllLogos {
+  logos {
+    _id
+    text {
+      text
+    }
+    backgroundColor
+    borderColor
+    borderRadius
+    lastUpdate
+  }
+}
+
+query GetLogo {
+  logo(_id: "5eb604e6f85207371caf27bc") {
+    _id
+    text {
+      text
+      color
+      size
+    }
+     backgroundColor
+      borderColor
+      borderRadius
+      borderWidth
+      padding
+      margins
+    img {
+      url
+      x
+      y
+    }
+      lastUpdate
+    
+  }
+}
+
+mutation AddLogo {
+  addLogo(text: [{text: "OMEGA", color: "black", size: 10}, {text: "ALPHA", color: "white", size: 20}], backgroundColor: "Red", borderColor: "Green", borderRadius: 23, borderWidth: 23, padding: 23, margins: 23, height: 20, width: 20) {
+    _id
+    text {
+      text
+      color
+      size
+    }
+    backgroundColor
+    borderColor
+    borderRadius
+    borderWidth
+    padding
+    margins
+  }
+}
+
+mutation UpdateLogo {
+  updateLogo(_id: "5eb604e6f85207371caf27bc", img:[{url: "test", x: 0, y: 0}], text: [{text: "OMEGA", color: "black", size: 10}, {text: "ALPHA", color: "white", size: 20}], backgroundColor: "Red", borderColor: "Green", borderRadius: 23, borderWidth: 23, padding: 23, margins: 23, width:20, height: 20) {
+    _id
+    text {
+      text
+      color
+      size
+    }
+    backgroundColor
+    borderColor
+    borderRadius
+    borderWidth
+    padding
+    margins
+  }
+}
+
+mutation RemoveLogo {
+  removeLogo(_id: "1") {
+    _id
+    text {
+      text
+      color
+      size
+    }
+    backgroundColor
+    borderColor
+    borderRadius
+    borderWidth
+    padding
+    margins
+  }
+}
+
+mutation RegisterUser {
+  signUp(name: "Pepe El Panochon", email: "jeffry@gmail.com", password: "123"){
+    name
+    email
+  	password
+    
+  }
+}
+mutation LogIn {
+  logIn(email: "jeffry@gmail.com", password: "123"){
+    token
+  }
+}

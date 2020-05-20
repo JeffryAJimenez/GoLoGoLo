@@ -7,6 +7,10 @@ var mongoose = require("mongoose");
 var graphqlHTTP = require("express-graphql");
 var schema = require("./graphql/logoSchemas");
 var cors = require("cors");
+const cookiesession = require("cookie-session");
+const passport = require("passport");
+
+var passportConfig = require("./config/passport");
 
 mongoose
   .connect("mongodb://localhost/node-graphql", {
@@ -18,13 +22,16 @@ mongoose
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+var authRouter = require("./routes/auth");
 
 var app = express();
-
+app.use("*", cors());
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
-
+app.use(cookiesession({ maxAge: 24 * 60 * 60 * 1000, keys: ["SecretKey"] }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -33,10 +40,15 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-app.use("*", cors());
+app.use(
+  "/login",
+
+  authRouter
+);
+
 app.use(
   "/graphql",
-  cors(),
+  cors({ origin: "http://localhost:3001", credentials: true }),
   graphqlHTTP({
     schema: schema,
     rootValue: global,

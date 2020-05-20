@@ -1,3 +1,5 @@
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 var GraphQLSchema = require("graphql").GraphQLSchema;
 var GraphQLObjectType = require("graphql").GraphQLObjectType;
 var GraphQLList = require("graphql").GraphQLList;
@@ -9,6 +11,15 @@ var GraphQLString = require("graphql").GraphQLString;
 var GraphQLInt = require("graphql").GraphQLInt;
 var GraphQLDate = require("graphql-date");
 var LogoModel = require("../models/Logo");
+var UserModel = require("../models/User");
+
+const Token = new GraphQLObjectType({
+  name: "Token",
+  description: "Json web Token",
+  fields: () => ({
+    token: { type: GraphQLNonNull(GraphQLString) },
+  }),
+});
 
 const ImageInputType = new GraphQLInputObjectType({
   name: "ImageInput",
@@ -107,6 +118,32 @@ const logoType = new GraphQLObjectType({
   }),
 });
 
+const userType = new GraphQLObjectType({
+  name: "user",
+  description: "a user",
+  fields: () => ({
+    _id: {
+      type: GraphQLString,
+    },
+
+    name: {
+      type: GraphQLString,
+    },
+
+    email: {
+      type: GraphQLString,
+    },
+
+    password: {
+      type: GraphQLString,
+    },
+
+    logos: {
+      type: GraphQLList(logoType),
+    },
+  }),
+});
+
 const RootQueryType = new GraphQLObjectType({
   name: "Query",
   description: "root Query",
@@ -144,6 +181,71 @@ const RootMutationType = new GraphQLObjectType({
   name: "Mutation",
   description: "root Mutation",
   fields: () => ({
+    signUp: {
+      type: userType,
+      description: "Create a new User",
+      args: {
+        name: { type: GraphQLNonNull(GraphQLString) },
+        email: { type: GraphQLNonNull(GraphQLString) },
+        password: { type: GraphQLNonNull(GraphQLString) },
+      },
+      resolve: async (root, params) => {
+        try {
+          const user = await UserModel.findOne({ email: params.email });
+
+          if (user) {
+            throw new Error("Account Exists with this email");
+          }
+
+          const hashedPassword = await bcrypt.hash(params.password, 12);
+          const newUser = new UserModel({
+            ...params,
+            password: hashedPassword,
+          });
+
+          const result = await newUser.save();
+
+          return result;
+        } catch (err) {
+          console.log(err);
+          throw err;
+        }
+      },
+    },
+    logIn: {
+      type: Token,
+      description: "Logs User in",
+      args: {
+        email: { type: GraphQLNonNull(GraphQLString) },
+        password: { type: GraphQLNonNull(GraphQLString) },
+      },
+      resolve: async (root, params) => {
+        try {
+          const user = await UserModel.findOne({ email: params.email });
+
+          if (!user) {
+            throw new Error("Wrong credentitals");
+          }
+
+          const isMatch = await bcrypt.compare(params.password, user.password);
+
+          if (!isMatch) {
+            throw new Error("Wrong credentitals");
+          }
+
+          //jwt sign
+          const secret = "mysecret";
+          const token = jwt.sign({ email: user.email }, secret, {
+            expiresIn: "1d",
+          });
+
+          return { token };
+        } catch (err) {
+          console.log(err);
+          throw err;
+        }
+      },
+    },
     addLogo: {
       type: logoType,
       description: "add a logo",

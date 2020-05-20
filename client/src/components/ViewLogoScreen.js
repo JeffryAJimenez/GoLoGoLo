@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import "../App.css";
 import gql from "graphql-tag";
@@ -94,7 +94,10 @@ class ViewLogoScreen extends Component {
                   <div className='panel panel-default'>
                     <div className='panel-heading'>
                       <h4>
-                        <button onClick={(e) => this.saveimage(e)}>
+                        <button
+                          className='btn btn-primary'
+                          onClick={(e) => this.saveimage(e)}
+                        >
                           Download
                         </button>
                       </h4>

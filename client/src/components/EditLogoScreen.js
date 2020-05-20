@@ -206,15 +206,15 @@ class EditLogoScreen extends Component {
                 <div className='container'>
                   <div className='panel panel-default'>
                     <div className='panel-heading'>
-                      <h4>
-                        <Link to='/'>Home</Link>
-                      </h4>
                       <h3 className='panel-title'>Edit Logo</h3>
                     </div>
                     <div className='row'>
-                      <div className='col-'>
+                      <div className='col-' style={{ marginRight: "35px" }}>
                         <div className='panel-body'>
-                          <button onClick={() => this.addText(data)}>
+                          <button
+                            className='btn btn-primary'
+                            onClick={() => this.addText(data)}
+                          >
                             Add Text
                           </button>
                           <form
@@ -412,6 +412,12 @@ class EditLogoScreen extends Component {
                               />
                             </div>
                             <button
+                              className='btn btn-primary'
+                              style={{
+                                marginRight: "20px",
+                                marginBottom: "10px",
+                                marginTop: "5px",
+                              }}
                               type='button'
                               onClick={() => this.addImage(data)}
                             >
@@ -430,7 +436,15 @@ class EditLogoScreen extends Component {
                                 />
                               ))}
 
-                            <button type='submit' className='btn btn-success'>
+                            <button
+                              style={{
+                                marginRight: "20px",
+                                marginBottom: "10px",
+                                marginTop: "5px",
+                              }}
+                              type='submit'
+                              className='btn btn-success'
+                            >
                               Submit
                             </button>
                           </form>
